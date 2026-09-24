@@ -87,12 +87,28 @@ Triggered by: scheduled cron, "paper brief", "recommend papers", "what should I 
    - Submission date
    - Abstract (first 150 words)
    - One-sentence relevance note (why it matches the user's topics)
-6. Pick the 3 most relevant/recent. Present as:
+
+6. **Score each paper (1–10)** using this rubric. Compute the score explicitly before ranking:
+
+   | Signal | Points |
+   |--------|--------|
+   | Topic keyword appears in the **title** | +3 |
+   | Published in the **last 30 days** | +2 |
+   | Published in the **last 90 days** | +1 (mutually exclusive with above) |
+   | **SoK / survey / systematization** paper (high learning value) | +2 |
+   | Abstract cites a **concrete result or benchmark number** | +2 |
+   | **Novel method or defense** (not just analysis) | +1 |
+   | **Directly actionable** (practitioner can use today) | +1 |
+   | Already in `history[]` or `skipped[]` | −5 (should be filtered, but penalise if missed) |
+
+   Max score: 10. Minimum to appear in brief: 4.
+
+7. Pick the **3 highest-scoring** papers. Present as:
 
 ```
 📚 **Paper Brief** — {date}
 
-**1. {Title}**
+**1. {Title}** `★ {score}/10`
 *{Authors} · {date}*
 {2-sentence summary}: what it does + why it matters for {matched topic}
 `arxiv.org/abs/{id}`
@@ -106,7 +122,7 @@ Reply with a number (1/2/3) to start reading, or `skip all` for a fresh set.
 Active paper: {title if any, else "none"}
 ```
 
-7. Save the 3 papers to `last_brief.papers` and `last_brief.date` in state.json.
+8. Save the 3 papers to `last_brief.papers` and `last_brief.date` in state.json.
 8. If `active_paper.arxiv_id` is not null, remind the user they have an active paper and can `/professor continue`.
 
 ### START mode
